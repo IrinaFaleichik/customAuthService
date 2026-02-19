@@ -1,6 +1,8 @@
 # Custom Authentication Service
 ## Small web authentication service built with ZIO
 
+trello board for project: https://trello.com/b/K9CYso7c/auth-service
+
 project (will be) consists of two parts:
 1) auth-core: library with authentication logic
 2) auth-service: REST API for authentication
@@ -27,7 +29,8 @@ auth-project/
 │   │   │   │   │   └── TokenValidator.scala
 │   │   │   │   └── errors/
 │   │   │   │       └── AuthError.scala
-│   │   │   └── build.sbt
+│   │   ├── test/scala/
+│   │   └── build.sbt
 ├── auth-service/
 │   ├── src/
 │   │   ├── main/scala/
@@ -41,7 +44,8 @@ auth-project/
 │   │   │   │   │   └── TokenService.scala
 │   │   │   │   └── persistence/
 │   │   │   │       └── UserRepository.scala
-│   │   │   └── build.sbt
+│   │   ├── test/scala/
+│   │   └── build.sbt
 └── build.sbt
 ```
 ### Service usage:
