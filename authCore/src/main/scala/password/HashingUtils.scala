@@ -18,18 +18,3 @@ trait HashingUtils:
 
   def fromPlainText(plainPassword: String): HashedPassword =
     HashedPassword.create(hashing(plainPassword + secret.salt, 0))
-
-object HashingUtils:
-  private final class HashingUtilsLive(override val secret: Secret) extends HashingUtils
-
-  private def make(secret: Secret) = HashingUtilsLive(secret)
-
-//  def live: ZLayer[Secret, Throwable, HashingUtils] =
-//    ZLayer.fromFunction(HashingUtils.make(_))
-//
-//  def fromPlainText(plainPassword: String): ZIO[HashingUtils, Throwable, HashedPassword] =
-//    for
-//      hs <- ZIO.service[HashingUtils]
-//      _ <- ZIO.logInfo("Hashing password")
-//      hashedProtectedPassword = hs.fromPlainText(plainPassword)
-//    yield hashedProtectedPassword
