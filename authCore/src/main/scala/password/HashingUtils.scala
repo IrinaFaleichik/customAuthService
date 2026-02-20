@@ -1,9 +1,6 @@
 package com.irka.authCore
 package password
 
-import zio.{ZIO, ZLayer}
-import zio.json.{JsonDecoder, JsonEncoder}
-
 import java.security.MessageDigest
 import java.util.Base64
 import scala.annotation.tailrec
@@ -27,17 +24,12 @@ object HashingUtils:
 
   private def make(secret: Secret) = HashingUtilsLive(secret)
 
-  // JSON codecs for PasswordHash
-  implicit val encoder: JsonEncoder[HashedPassword] = JsonEncoder.string.contramap(_.hash)
-
-  implicit val decoder: JsonDecoder[HashedPassword] = JsonDecoder.string.map(HashedPassword.create)
-
-  def live: ZLayer[Secret, Throwable, HashingUtils] =
-    ZLayer.fromFunction(HashingUtils.make(_))
-
-  def fromPlainText(plainPassword: String): ZIO[HashingUtils, Throwable, HashedPassword] =
-    for
-      hs <- ZIO.service[HashingUtils]
-      _ <- ZIO.logInfo("Hashing password")
-      hashedProtectedPassword = hs.fromPlainText(plainPassword)
-    yield hashedProtectedPassword
+//  def live: ZLayer[Secret, Throwable, HashingUtils] =
+//    ZLayer.fromFunction(HashingUtils.make(_))
+//
+//  def fromPlainText(plainPassword: String): ZIO[HashingUtils, Throwable, HashedPassword] =
+//    for
+//      hs <- ZIO.service[HashingUtils]
+//      _ <- ZIO.logInfo("Hashing password")
+//      hashedProtectedPassword = hs.fromPlainText(plainPassword)
+//    yield hashedProtectedPassword

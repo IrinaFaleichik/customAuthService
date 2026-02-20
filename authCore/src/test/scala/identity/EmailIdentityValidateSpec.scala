@@ -51,27 +51,27 @@ object EmailIdentityValidateSpec extends ZIOSpecDefault:
         assertTrue(result.isLeft) &&
           assert(result.left.getOrElse(""))(containsString("Password"))
     ),
-    suite("JSON serialization")(
-      test("should successfully decode valid JSON"):
-        val json = """{"email":"user@example.com","password":"password123"}"""
-        val result = json.fromJson[EmailIdentity]
-
-        assertTrue(result.isRight) &&
-          assert(result)(isRight(equalTo(EmailIdentity("user@example.com", "password123"))))
-      ,
-      test("should fail to decode invalid email with error message"):
-        val json = """{"email":"invalid-email","password":"password123"}"""
-        val result = json.fromJson[EmailIdentity]
-        assertTrue(result.isLeft) &&
-          assert(result.left.getOrElse(""))(containsString("email"))
-      ,
-      test("should encode to JSON and decode back"):
-        val original = EmailIdentity("user@example.com", "password123")
-        val json = original.toJson
-        val decoded = json.fromJson[EmailIdentity]
-        assertTrue(decoded.isRight) &&
-          assert(decoded)(isRight(equalTo(original)))
-    ),
+//    suite("JSON serialization")(
+//      test("should successfully decode valid JSON"):
+//        val json = """{"email":"user@example.com","password":"password123"}"""
+//        val result = json.fromJson[EmailIdentity]
+//
+//        assertTrue(result.isRight) &&
+//          assert(result)(isRight(equalTo(EmailIdentity("user@example.com", "password123"))))
+//      ,
+//      test("should fail to decode invalid email with error message"):
+//        val json = """{"email":"invalid-email","password":"password123"}"""
+//        val result = json.fromJson[EmailIdentity]
+//        assertTrue(result.isLeft) &&
+//          assert(result.left.getOrElse(""))(containsString("email"))
+//      ,
+//      test("should encode to JSON and decode back"):
+//        val original = EmailIdentity("user@example.com", "password123")
+//        val json = original.toJson
+//        val decoded = json.fromJson[EmailIdentity]
+//        assertTrue(decoded.isRight) &&
+//          assert(decoded)(isRight(equalTo(original)))
+//    ),
     suite("Edge cases")(
       test("should accept email with plus sign in local part"):
         val identity = EmailIdentity("user+tag@example.com", "password123")

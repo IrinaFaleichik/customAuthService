@@ -3,7 +3,6 @@ package identity
 
 import zio.test.*
 import zio.test.Assertion.*
-import zio.json.*
 
 object UsernameIdentityValidateSpec extends ZIOSpecDefault:
 
@@ -50,25 +49,25 @@ object UsernameIdentityValidateSpec extends ZIOSpecDefault:
       assertTrue(result.isLeft) &&
         assert(result.left.getOrElse(""))(containsString("Password must be at least 6 characters long"))
     ,
-    test("should successfully decode valid JSON"):
-      val json = """{"username":"validUser","password":"validPassword"}"""
-      val result = json.fromJson[UsernameIdentity]
-      assertTrue(result.isRight) &&
-        assert(result)(isRight(equalTo(UsernameIdentity("validUser", "validPassword"))))
-    ,
-    test("should fail to decode invalid JSON with error message"):
-      val json = """{"username":"ab","password":"validPassword"}"""
-      val result = json.fromJson[UsernameIdentity]
-      assertTrue(result.isLeft) &&
-        assert(result.left.getOrElse(""))(containsString("Username"))
-    ,
-    test("should encode to JSON and decode back"):
-      val original = UsernameIdentity("validUser", "validPassword")
-      val json = original.toJson
-      val decoded = json.fromJson[UsernameIdentity]
-      assertTrue(decoded.isRight) &&
-        assert(decoded)(isRight(equalTo(original)))
-    ,
+//    test("should successfully decode valid JSON"):
+//      val json = """{"username":"validUser","password":"validPassword"}"""
+//      val result = json.fromJson[UsernameIdentity]
+//      assertTrue(result.isRight) &&
+//        assert(result)(isRight(equalTo(UsernameIdentity("validUser", "validPassword"))))
+//    ,
+//    test("should fail to decode invalid JSON with error message"):
+//      val json = """{"username":"ab","password":"validPassword"}"""
+//      val result = json.fromJson[UsernameIdentity]
+//      assertTrue(result.isLeft) &&
+//        assert(result.left.getOrElse(""))(containsString("Username"))
+//    ,
+//    test("should encode to JSON and decode back"):
+//      val original = UsernameIdentity("validUser", "validPassword")
+//      val json = original.toJson
+//      val decoded = json.fromJson[UsernameIdentity]
+//      assertTrue(decoded.isRight) &&
+//        assert(decoded)(isRight(equalTo(original)))
+//    ,
     test("should validate username with special characters correctly"):
       val validIdentity = UsernameIdentity("valid_user-123", "validPassword")
       val invalidIdentity = UsernameIdentity("invalid@user", "validPassword")

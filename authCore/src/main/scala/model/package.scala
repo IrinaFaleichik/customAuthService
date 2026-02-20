@@ -2,12 +2,21 @@ package com.irka.authCore
 
 import identity.{EmailIdentity, Identity, UsernameIdentity}
 import password.{HashedPassword, HashingUtils}
-import dto.Role
 
 //import infrastructure.db.entities.TableEntity
-import zio.ZIO
+//import zio.ZIO
 
 package object model:
+
+  enum Role:
+    case User, Admin
+
+  case class AuthUserDto(
+                          id: UserId, 
+                          username: String,
+                          email: Option[String],
+                          role: Role
+                        )
 
   final type UserId = String
 
@@ -36,23 +45,23 @@ package object model:
       val randomSuffix = java.util.UUID.randomUUID().toString.take(8)
       s"$prefix-$randomSuffix"
 
-    def createFromIdentity(identity: Identity): ZIO[HashingUtils, Throwable, AuthUser] =
-      for
-        hashedPassword <- HashingUtils.fromPlainText(identity.password)
-        user = identity match
-          case email: EmailIdentity =>
-            AuthUser(
-              id = generateId,
-              username = randomUsername(email.email),
-              password = hashedPassword,
-              email = Some(email.email)
-            )
-          case username: UsernameIdentity =>
-            AuthUser(
-              id = generateId,
-              username = username.username,
-              password = hashedPassword,
-              email = None
-            )
-      yield user
+//    def createFromIdentity(identity: Identity): Either[Throwable, AuthUser] =
+//      for
+//        hashedPassword <- HashingUtils.fromPlainText(identity.password)
+//        user = identity match
+//          case email: EmailIdentity =>
+//            AuthUser(
+//              id = generateId,
+//              username = randomUsername(email.email),
+//              password = hashedPassword,
+//              email = Some(email.email)
+//            )
+//          case username: UsernameIdentity =>
+//            AuthUser(
+//              id = generateId,
+//              username = username.username,
+//              password = hashedPassword,
+//              email = None
+//            )
+//      yield user
 
