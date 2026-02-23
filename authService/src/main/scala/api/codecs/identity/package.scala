@@ -8,8 +8,8 @@ package object identity:
 
   implicit val emailEncoder: JsonEncoder[EmailIdentity] = DeriveJsonEncoder.gen[EmailIdentity]
   implicit val emailDecoder: JsonDecoder[EmailIdentity] =
-    DeriveJsonDecoder.gen[EmailIdentity].mapOrFail(_.validate)
+    DeriveJsonDecoder.gen[EmailIdentity].mapOrFail(_.validate.left.map(_.getMessage))
 
   implicit val usernameEncoder: JsonEncoder[UsernameIdentity] = DeriveJsonEncoder.gen[UsernameIdentity]
   implicit val usernameDecoder: JsonDecoder[UsernameIdentity] =
-    DeriveJsonDecoder.gen[UsernameIdentity].mapOrFail(_.validate)
+    DeriveJsonDecoder.gen[UsernameIdentity].mapOrFail(_.validate.left.map(_.getMessage))
