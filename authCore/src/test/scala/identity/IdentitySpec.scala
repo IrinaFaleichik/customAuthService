@@ -1,6 +1,7 @@
 package com.irka.authCore
 package identity
 
+import errors.{IdentityParseError, ParseError}
 import zio.test.Assertion.*
 import zio.test.*
 
@@ -17,17 +18,17 @@ object IdentitySpec extends ZIOSpecDefault:
         test("fails with short username"):
           val result = identity.fromUsername("ab", "password123")
           assertTrue(result.isLeft) &&
-            assert(result.left.toOption.get)(containsString("at least"))
+            assert(result)(isLeft(equalTo(IdentityParseError.InvalidUsername(ParseError.TooShort))))
         ,
         test("fails with invalid characters"):
           val result = identity.fromUsername("user name", "password123")
           assertTrue(result.isLeft) &&
-            assert(result.left.toOption.get)(containsString("spaces or forbidden symbols"))
+            assert(result)(isLeft(equalTo(IdentityParseError.InvalidUsername(ParseError.InvalidCharacter))))
         ,
         test("fails with short password"):
           val result = identity.fromUsername("validUser", "pass")
           assertTrue(result.isLeft) &&
-            assert(result.left.toOption.get)(containsString("Password must be at least"))
+            assert(result)(isLeft(equalTo(IdentityParseError.InvalidPassword(ParseError.TooShort))))
       ),
 
       suite("fromEmail")(
@@ -35,17 +36,17 @@ object IdentitySpec extends ZIOSpecDefault:
           val result = identity.fromEmail("user@example.com", "password123")
           assertTrue(result.isRight) &&
             assertTrue(result.toOption.get.isInstanceOf[EmailIdentity]) &&
-            assert(result.toOption.get.asInstanceOf[EmailIdentity].email)(equalTo("user@example.com"))
+            assert(result)(isRight(equalTo(EmailIdentity("user@example.com", "password123"))))
         ,
         test("fails with invalid email format"):
           val result = identity.fromEmail("not-an-email@", "password123")
           assertTrue(result.isLeft) &&
-            assert(result.left.toOption.get)(equalTo("Invalid email format"))
+            assert(result)(isLeft(equalTo(IdentityParseError.InvalidEmail(ParseError.BadFormat))))
         ,
         test("fails with short password"):
           val result = identity.fromEmail("user@example.com", "pass")
           assertTrue(result.isLeft) &&
-            assert(result.left.toOption.get)(containsString("Password must be at least"))
+            assert(result)(isLeft(equalTo(IdentityParseError.InvalidPassword(ParseError.TooShort))))
       )
     ),
     // Validation rules tests
