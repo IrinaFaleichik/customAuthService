@@ -1,11 +1,5 @@
 package com.irka.authCore
 
-import identity.{EmailIdentity, Identity, UsernameIdentity}
-import password.{HashedPassword, HashingUtils}
-
-//import infrastructure.db.entities.TableEntity
-//import zio.ZIO
-
 package object model:
 
   enum Role:

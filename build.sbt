@@ -9,9 +9,6 @@ lazy val root = (project in file("."))
     idePackagePrefix := Some("com.irka.auth")
   )
 
-//lazy val all = (project in file("."))
-//  .aggregate(authCore, authService)
-
 lazy val authCore = project
     .in(file("authCore"))
     .settings(
