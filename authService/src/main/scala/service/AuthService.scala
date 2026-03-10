@@ -12,17 +12,17 @@ import zio.{ZIO, ZLayer}
 
 // Strategy pattern for authenticating users
 trait AuthService:
-  def authenticate(identity: Identity): ZIO[HashingUtils, Throwable, AuthUserDto]
+  def authenticate(identity: Identity): ZIO[HashingUtilsService, Throwable, AuthUserDto]
 
   def create(identity: Identity): ZIO[Any, Throwable, AuthUserDto]
 
   def changeRole(userId: UserId, role: Role): ZIO[Any, Throwable, AuthUserDto]
 
 object AuthService:
-  def authenticate(identity: Identity): ZIO[AuthService & HashingUtils, Throwable, AuthUserDto] =
+  def authenticate(identity: Identity): ZIO[AuthService & HashingUtilsService, Throwable, AuthUserDto] =
     ZIO.serviceWithZIO[AuthService](_.authenticate(identity))
 
-  def authenticateAdmin(identity: Identity): ZIO[AuthService & HashingUtils, Throwable, AuthUserDto] =
+  def authenticateAdmin(identity: Identity): ZIO[AuthService & HashingUtilsService, Throwable, AuthUserDto] =
     authenticate(identity)
       .flatMap:
         case auth@AuthUserDto(_, _, _, role) if role == Role.Admin => ZIO.succeed(auth)
@@ -38,7 +38,7 @@ object AuthService:
                                            usernameRepo: AuthRepository[UsernameIdentity],
                                            emailRepo: AuthRepository[EmailIdentity]
                                          ) extends AuthService:
-    override def authenticate(identity: Identity): ZIO[HashingUtils, Throwable, AuthUserDto] =
+    override def authenticate(identity: Identity): ZIO[HashingUtilsService, Throwable, AuthUserDto] =
       identity match
         case i: EmailIdentity => ZIO.fail(new Exception("Email authentication is not implemented yet"))
         case i: UsernameIdentity => usernameRepo.authenticate(i)

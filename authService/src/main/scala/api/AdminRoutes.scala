@@ -4,19 +4,18 @@ package api
 import domain.model.UserId
 
 import com.irka.authCore.model.Role
-import com.irka.authCore.password.HashingUtils
 import service.AuthService
+import service.HashingUtilsService
 import zio.*
 import zio.http.*
-import api.codecs.*
-import api.codecs.identity.*
 import com.irka.authService.logging.LoggingExtensions.*
 import com.irka.authCore.model.AuthUserDto
+import domain.codecs.*
 
 object AdminRoutes {
-  val routes: Routes[AuthService & HashingUtils, Response] = Routes(changeUserRole) @@ Middleware.debug //, deleteUser) @@ Middleware.debug
+  val routes: Routes[AuthService & HashingUtilsService, Response] = Routes(changeUserRole) @@ Middleware.debug //, deleteUser) @@ Middleware.debug
 
-  private lazy val changeUserRole: Route[AuthService & HashingUtils, Response] =
+  private lazy val changeUserRole: Route[AuthService & HashingUtilsService, Response] =
     Method.POST / "role" / "change" -> handler: (request: Request) =>
       for
         _ <- ZIO.logInfo("Entering route /role/change")

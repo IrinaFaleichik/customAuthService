@@ -2,15 +2,14 @@ package com.irka.authService
 package api
 
 import com.irka.authCore.model.AuthUserDto
-import com.irka.authCore.password.HashingUtils
-import com.irka.authService.service.AuthService
+import service.{AuthService, HashingUtilsService}
 import zio.ZIO
 import zio.http.*
 
 object AuthRoutes:
-  val routes: Routes[AuthService & HashingUtils, Response] = Routes(login, signUp)
+  val routes: Routes[AuthService & HashingUtilsService, Response] = Routes(login, signUp)
 
-  lazy val login: Route[AuthService & HashingUtils, Response] =
+  lazy val login: Route[AuthService & HashingUtilsService, Response] =
     Method.POST / "account" / "login" -> handler: (request: Request) =>
       for
         _ <- ZIO.logInfo("entering route: /account/signup")
@@ -19,7 +18,7 @@ object AuthRoutes:
     .mapError(dbErrors + jsonParsingError + anyError) @@
       AuthHandler.basicAuthWithUserContext @@ redirectToGreet
 
-  lazy val signUp: Route[AuthService & HashingUtils, Response] =
+  lazy val signUp: Route[AuthService & HashingUtilsService, Response] =
     Method.POST / "account" / "signup" -> handler: (request: Request) =>
       for
         _ <- ZIO.logInfo("entering route: /account/signup")

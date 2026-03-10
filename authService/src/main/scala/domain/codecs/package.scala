@@ -1,5 +1,5 @@
 package com.irka.authService
-package api
+package domain
 
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 import com.irka.authCore.model.{Role, UserId}

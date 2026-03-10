@@ -8,6 +8,8 @@ import com.irka.authCore.model
 import com.irka.authCore.model.AuthUserDto
 import com.irka.authCore.password.HashingUtils
 import persistence.entities.{AuthUser, DBContext, TableEntity}
+
+import service.HashingUtilsService
 import io.getquill.*
 import zio.{ZIO, ZLayer}
 
@@ -17,7 +19,7 @@ final class AuthRepositoryByUsername(ctx: DBContext) extends AuthRepository[User
 
   import ctx.*
 
-  override def authenticate(identity: UsernameIdentity): ZIO[HashingUtils, Throwable, AuthUserDto] =
+  override def authenticate(identity: UsernameIdentity): ZIO[HashingUtilsService, Throwable, AuthUserDto] =
     for
       _ <- ZIO.logInfo(s"authenticating identity: ${identity.username}")
       userFromIdentity <- AuthUser.createFromIdentity(identity) //todo add error type: sys env variables for Secret is not configured, error
@@ -38,7 +40,7 @@ final class AuthRepositoryByUsername(ctx: DBContext) extends AuthRepository[User
 
   override def findById(id: UserId): ZIO[Any, Throwable, Option[AuthUserDto]] = ???
 
-  override def create(identity: UsernameIdentity): ZIO[HashingUtils, Throwable, List[(Long, AuthUserDto)]] =
+  override def create(identity: UsernameIdentity): ZIO[HashingUtilsService, Throwable, List[(Long, AuthUserDto)]] =
     for
       _ <- ZIO.logInfo(s"Creating users: ${identity.username}")
       authUser <- AuthUser.createFromIdentity(identity)

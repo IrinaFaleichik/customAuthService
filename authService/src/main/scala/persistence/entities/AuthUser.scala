@@ -33,7 +33,7 @@ object AuthUser:
     val randomSuffix = java.util.UUID.randomUUID().toString.take(8)
     s"$prefix-$randomSuffix"
 
-  def createFromIdentity(identity: Identity): ZIO[HashingUtils, Throwable, AuthUser] =
+  def createFromIdentity(identity: Identity): ZIO[HashingUtilsService, Throwable, AuthUser] =
     for
       hashedPassword <- HashingUtilsService.fromPlainText(identity.password)//ZIO
       user = identity match

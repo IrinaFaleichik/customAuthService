@@ -8,7 +8,8 @@ import com.irka.authCore.model.Role
 import zio.ZIO
 import zio.http.{Request, Response, Status}
 import zio.json.{DecoderOps, EncoderOps, JsonDecoder}
-
+import domain.codecs.*
+import domain.codecs.identity.*
 
 import java.sql.SQLException
 import scala.reflect.{ClassTag, classTag}
@@ -17,8 +18,6 @@ import scala.reflect.{ClassTag, classTag}
 package object api:
 
   //todo could I import all codecs and use it in the all modules without importing it in every module?
-  import api.codecs.*
-  import api.codecs.identity.*
 
   def anyError: PartialFunction[Throwable, Response] =
     e => Response.internalServerError(s"DB error: $e.getMessage")

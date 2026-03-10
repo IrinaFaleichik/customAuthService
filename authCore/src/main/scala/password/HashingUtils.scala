@@ -5,8 +5,7 @@ import java.security.MessageDigest
 import java.util.Base64
 import scala.annotation.tailrec
 
-trait HashingUtils:
-  val secret: Secret
+class HashingUtils(secret: Secret):
 
   @tailrec
   private def hashing(plainPassword: String, currentIteration: Int): String =

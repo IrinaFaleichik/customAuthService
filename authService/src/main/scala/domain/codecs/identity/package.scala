@@ -1,5 +1,5 @@
 package com.irka.authService
-package api.codecs
+package domain.codecs
 
 import com.irka.authCore.identity.{EmailIdentity, UsernameIdentity}
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
