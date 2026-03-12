@@ -1,6 +1,6 @@
 package com.irka.authService
 
-import domain.errors.InvalidJson
+import domain.errors.InvalidJsonException
 import domain.model.{User, UserId}
 
 import com.irka.authCore.identity.{EmailIdentity, Identity, UsernameIdentity}
@@ -23,7 +23,7 @@ package object api:
     e => Response.internalServerError(s"DB error: $e.getMessage")
 
   def jsonParsingError: PartialFunction[Throwable, Response] =
-    case e: InvalidJson => Response.text(e.getMessage).status(Status.BadRequest)
+    case e: InvalidJsonException => Response.text(e.getMessage).status(Status.BadRequest)
 
   extension (pf: PartialFunction[Throwable, Response])
     def +(other: PartialFunction[Throwable, Response]): PartialFunction[Throwable, Response] =
@@ -41,7 +41,7 @@ package object api:
     request.body.asString
       .flatMap(json =>
         json.fromJson[DecodedType] match
-          case Left(err) => ZIO.fail(InvalidJson(err)(formatExampleFor[DecodedType]))
+          case Left(err) => ZIO.fail(InvalidJsonException(err)(formatExampleFor[DecodedType]))
           case Right(resultType) => ZIO.succeed(resultType)
       )
 

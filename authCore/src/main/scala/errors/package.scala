@@ -4,7 +4,7 @@ package object errors:
 
   class AuthError(err: String) extends Exception(s"Authentication error: $err")
 
-  class InvalidCredentials extends AuthError("Invalid credentials")
+  class InvalidCredentials extends AuthError("Invalid credentials: username or password is invalid")
 
   enum ParseError(err: String) extends Exception(err):
     case TooLong extends ParseError(s"too long")

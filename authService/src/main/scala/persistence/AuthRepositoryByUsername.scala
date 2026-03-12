@@ -6,10 +6,10 @@ import domain.model.UserId
 import com.irka.authCore.identity.UsernameIdentity
 import com.irka.authCore.model
 import com.irka.authCore.model.AuthUserDto
-import com.irka.authCore.password.HashingUtils
 import persistence.entities.{AuthUser, DBContext, TableEntity}
-
 import service.HashingUtilsService
+
+import domain.errors.InvalidCredentialsException
 import io.getquill.*
 import zio.{ZIO, ZLayer}
 
@@ -33,7 +33,7 @@ final class AuthRepositoryByUsername(ctx: DBContext) extends AuthRepository[User
         case Some(record) if userFromIdentity.password.verifyHashed(record.passwordHash) =>
           ZIO.succeed(record.toDto)
         case _ =>
-          ZIO.fail(new Exception("Invalid credentials, username or password is invalid"))
+          ZIO.fail(new InvalidCredentialsException)
     yield user
 
   // Other implementations

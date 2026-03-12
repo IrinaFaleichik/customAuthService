@@ -5,9 +5,9 @@ import domain.model.UserId
 
 import com.irka.authCore.identity.{EmailIdentity, Identity, UsernameIdentity}
 import com.irka.authCore.model.{AuthUserDto, Role}
-import com.irka.authCore.password.HashingUtils
 import persistence.AuthRepository
 
+import domain.errors.{AccessDeniedException, NotImplementedException}
 import zio.{ZIO, ZLayer}
 
 // Strategy pattern for authenticating users
@@ -26,7 +26,7 @@ object AuthService:
     authenticate(identity)
       .flatMap:
         case auth@AuthUserDto(_, _, _, role) if role == Role.Admin => ZIO.succeed(auth)
-        case _ => ZIO.fail(new Exception("Access restricted: you should be admin to access this resource"))
+        case _ => ZIO.fail(new AccessDeniedException)
 
   def changeRole(userId: UserId, role: Role): ZIO[AuthService, Throwable, AuthUserDto] =
     ZIO.serviceWithZIO[AuthService](_.changeRole(userId, role))
@@ -40,13 +40,13 @@ object AuthService:
                                          ) extends AuthService:
     override def authenticate(identity: Identity): ZIO[HashingUtilsService, Throwable, AuthUserDto] =
       identity match
-        case i: EmailIdentity => ZIO.fail(new Exception("Email authentication is not implemented yet"))
+        case i: EmailIdentity => ZIO.fail(new NotImplementedException("Email authentication"))
         case i: UsernameIdentity => usernameRepo.authenticate(i)
 
     override def create(identity: Identity): ZIO[Any, Throwable, AuthUserDto] =
       identity match
-        case i: EmailIdentity => ZIO.fail(new Exception("Email creation is not implemented yet"))
-        case i: UsernameIdentity => ZIO.fail(new Exception("Username creation is not implemented yet")) //usernameRepo.create(i)
+        case i: EmailIdentity => ZIO.fail(new NotImplementedException("Email creation"))
+        case i: UsernameIdentity => ZIO.fail(new NotImplementedException("Username creation")) //usernameRepo.create(i)
 
     def changeRole(userId: UserId, role: Role): ZIO[Any, Throwable, AuthUserDto] = ???
 

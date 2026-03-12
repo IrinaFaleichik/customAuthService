@@ -8,8 +8,9 @@ import com.irka.authCore.model
 import com.irka.authCore.model.AuthUserDto
 import com.irka.authCore.password.{HashedPassword, HashingUtils}
 import persistence.entities.{AuthUser, DBContext, TableEntity}
-
 import service.HashingUtilsService
+import domain.errors.{InvalidCredentialsException, NotImplementedException}
+
 import io.getquill.*
 import zio.{ZIO, ZLayer}
 
@@ -36,13 +37,13 @@ final class AuthRepositoryByEmail(ctx: DBContext) extends AuthRepository[EmailId
         case Some(record) if userFromIdentity.password.verifyHashed(record.passwordHash) =>
           ZIO.succeed(record.toDto)
         case _ =>
-          ZIO.fail(new Exception("Invalid credentials, username or password is invalid"))
+          ZIO.fail(new InvalidCredentialsException)
     yield user
 
   // Other implementations
 
   override def findById(id: UserId): ZIO[Any, Throwable, Option[AuthUserDto]] =
-    ZIO.fail(new Exception("Email authentication is not implemented yet"))
+    ZIO.fail(new NotImplementedException("Email authentication"))
 
   override def create(identity: EmailIdentity): ZIO[HashingUtilsService, Throwable, List[(Long, AuthUserDto)]] =
     for
