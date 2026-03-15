@@ -18,3 +18,8 @@ package object errors:
     case InvalidUsername(err: ParseError) extends IdentityParseError(s"username is invalid, reason: $err")
 
   class SecretNotConfigured extends AuthError("Secret is not configured")
+
+  enum TokenError(val message: String) extends Exception(s"Token $message"):
+    case InvalidSignature extends TokenError("signature is invalid")
+    case TokenExpired extends TokenError("has expired")
+    case MalformedToken extends TokenError("is malformed")
